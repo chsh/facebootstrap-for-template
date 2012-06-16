@@ -1,0 +1,37 @@
+
+before "deploy:setup", "config:setup"
+before 'deploy:assets:precompile', 'config:symlink'
+
+namespace :config do
+  desc "Create production yaml files in shared path"
+  task :setup do
+    %w(@@YAML_FILES@@).each do |file|
+      pf = "config/#{file}.production"
+      if File.exist? pf
+        content = File.read(pf)
+        run "mkdir -p #{shared_path}/config"
+        put content, "#{shared_path}/config/#{file}"
+      else
+        puts "#{file} not exist. skipped"
+      end
+    end
+    pf = "config/settings/production.rb"
+    if File.exist? pf
+      content = File.read(pf)
+      run "mkdir -p #{shared_path}/config/settings"
+        put content, "#{shared_path}/config/settings/#{File.basename(pf)}"
+    else
+        puts "#{pf} not exist. skipped"
+    end
+  end
+
+  desc "Make symlink for some config files"
+  task :symlink do
+    %w(@@YAML_FILES@@).each do |file|
+      run "ln -nfs #{shared_path}/config/#{file} #{latest_release}/config/#{file}"
+    end
+    if File.exist? "config/settings/production.rb"
+      file = 'production.rb'
+      run "ln -nfs #{shared_path}/config/settings/#{file} #{latest_release}/config/settings/#{file}"
+  end
+end
