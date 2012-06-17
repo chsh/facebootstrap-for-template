@@ -33,5 +33,6 @@ namespace :config do
     if File.exist? "config/settings/production.rb"
       file = 'production.rb'
       run "ln -nfs #{shared_path}/config/settings/#{file} #{latest_release}/config/settings/#{file}"
+    end
   end
 end
