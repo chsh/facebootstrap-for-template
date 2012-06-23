@@ -1,0 +1,21 @@
+doctype html
+html
+  head
+    title @@APP_C_NAME@@
+    = stylesheet_link_tag "application"
+    = javascript_include_tag "application"
+    = csrf_meta_tags
+  body
+    .navbar.navbar-fixed-top
+      .navbar-inner
+        .container
+          = link_to 'MerryBiz', root_url, class: 'brand'
+          .nav-collapse
+
+    .container
+      = yield
+      hr/
+      footer.footer
+        p(style="text-align: center")
+          ' &copy; 2012
+          ' @@APP_C_NAME@@
